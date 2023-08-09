@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador de datos de ventas</title>
+    <script>
+      var ventas = 10000;
+      var salida = "";
+      var productos = [
+        ["1", "Smartphone TechMaster", "499.99"],
+        ["2", "Auriculares inalámbricos SoundWave", "79.99"],
+        ["3", "Portátil UltraBook", "999.99"],
+        ["4", "Reloj inteligente SnapPro", "349.99"],
+        ["5", "Tablet eTouch", "299.99"],
+        ["6", "Altavoces Bluetooth SoundBeats", "59.99"],
+        ["7", "Impresora multifunción PrintMaster", "129.99"],
+        ["8", "Consola de videojuegos GameX", "299.99"],
+        ["9", "Aspiradora robótica CleanBot", "199.99"],
+        ["10", "Cafetera automática CoffeeBrew", "89.99"],
+        ["11", "Licuadora de alta potencia PowerBlend", "69.99"],
+        ["12", "Proyector de cine en casa CinePro", "399.99"],
+        ["13", "Monitor de fitness FitTracker", "129.99"],
+        ["14", "Maletín ejecutivo BusinessPro", "79.99"],
+        ["15", "Teclado inalámbrico KeyMaster", "49.99"],
+        ["16", "Smartwatch TimeTracker", "179.99"],
+        ["17", "Cámara réflex ProCapture", "799.99"],
+        ["18", "Robot de limpieza CleanMaster", "249.99"],
+        ["19", "Barra de sonido SoundBar", "149.99"],
+        ["20", "Licuadora personal BlendOnTheGo", "39.99"],
+        ["21", "Escáner de documentos DocScan", "89.99"],
+        ["22", "Teclado mecánico GamingPro", "129.99"],
+        ["23", "Bocina Bluetooth PartyBeats", "89.99"],
+        ["24", "Afeitadora eléctrica ShaveMaster", "59.99"],
+        ["25", "Micrófono condensador StudioMic", "199.99"],
+        ["26", "Sartén eléctrico CookMaster", "49.99"],
+        ["27", 'Smart TV UltraVision 55"', "699.99"],
+        ["28", "Ratón inalámbrico SpeedMouse", "29.99"],
+        ["29", "Máquina de coser SewingPro", "179.99"],
+        ["30", "Mochila deportiva TrekPack", "39.99"],
+        ["31", "Horno eléctrico BakeMaster", "159.99"],
+        ["32", "Sistema de seguridad HomeGuard", "299.99"],
+        ["33", "Bicicleta plegable FoldNgo", "249.99"],
+        ["34", "Impresora fotográfica PhotoPrint", "129.99"],
+        ["35", "Cámara de acción ActionCam", "119.99"],
+        ["36", "Lámpara LED NightLight", "19.99"],
+        ["37", "Raspadora de hielo IceCrush", "49.99"],
+        ["38", "Auriculares deportivos FitEar", "39.99"],
+        ["39", "Porta laptop TravelCase", "29.99"],
+        ["40", "Reloj despertador WakeUp", "14.99"],
+        ["41", "Mini proyector PocketCinema", "149.99"],
+        ["42", "Teclado iluminado GlowType", "49.99"],
+        ["43", "Máquina de café EspressoArt", "299.99"],
+        ["44", "Aspiradora de mano DustOff", "29.99"],
+        ["45", "Batería externa PowerBoost", "39.99"],
+        ["46", "Cargador inalámbrico WireLess", "19.99"],
+        ["47", "Licuadora personal ShakeIt", "34.99"],
+        ["48", "Bocinas para PC DeskSpeakers", "24.99"],
+        ["49", 'Monitor LED VisionView 27"', "229.99"],
+        ["50", "Escritorio de computadora DeskPro", "119.99"],
+      ];
+
+      function generarFechas() {
+        return new Date(
+          new Date(2000, 1, 1).getTime() +
+            Math.random() *
+              (new Date().getTime() - new Date(2000, 1, 1).getTime())
+        )
+          .toISOString()
+          .split("T")[0];
+      }
+
+      function generarHoras() {
+        return new Date(
+          new Date(2000, 1, 1).getTime() +
+            Math.random() *
+              (new Date().getTime() - new Date(2000, 1, 1).getTime())
+        )
+          .toISOString()
+          .split("T")[1]
+          .slice(0, -5);
+      }
+
+      function generarNumeroAleatorio(min,max) {
+        return Math.floor(Math.random() * (max - min) + min);
+      }
+
+      function generar() {
+        salida = `DROP DATABASE IF EXISTS pos;CREATE DATABASE IF NOT EXISTS pos; USE pos;<br> DROP TABLE IF EXISTS ventas;<br>CREATE TABLE IF NOT EXISTS ventas(id INT(10) NOT NULL UNIQUE,fecha DATE NOT NULL, hora TIME NOT NULL);<br>INSERT INTO ventas VALUES<br>`;
+        for (var i = 1; i <= ventas; i++) {
+          salida +=
+            "('" +
+            i +
+            "', '" +
+            generarFechas() +
+            "', '" +
+            generarHoras() +
+            "'),<br>";
+        }
+        salida = salida.slice(0, -5) + ";";
+        salida +=`<br>DROP TABLE IF EXISTS ventas_detalle;<br>CREATE TABLE IF NOT EXISTS ventas_detalle(id INT(10) NOT NULL,idproducto int(10) NOT NULL, nombreproducto VARCHAR(255) NOT NULL,precio FLOAT(9,2) NOT NULL);<br>INSERT INTO ventas_detalle VALUES <br>`;
+
+        for (let i = 1; i <= ventas; i++) {
+          var numero = generarNumeroAleatorio(1,10);
+          for (let j = 1; j <= numero; j++){
+            var producto = productos[generarNumeroAleatorio(0,49)]
+            salida += "('"+i+"', '"+producto[0]+"', '"+producto[1] +"', '"+producto[2]+"'),<br>";
+          }
+          salida += "<br>";
+        }
+        salida = salida.slice(0, -9) + ";";
+        document.getElementById("salida").innerHTML = salida;
+      }
+
+      function generarSQL() {
+        alert("Generando archivo SQL");
+        var var1 = document.createElement("a");
+        salida = salida.replaceAll("<br>", "\r\n");
+        var1.setAttribute(
+          "href",
+          "data:text/plain;charset=UTF-8," + encodeURIComponent(salida)
+        );
+        var1.setAttribute("download", "POS.sql");
+        var1.style.display = "none";
+        document.body.appendChild(var1);
+        var1.click();
+        document.body.removeChild(var1);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Generador de datos aleatorios de ventas</h1>
+    <input type="button" value="Generar Datos" onclick="generar()" />
+    <input type="button" value="Generar Archivo SQL" onclick="generarSQL()" />
+    <p id="salida"></p>
+  </body>
+</html>
